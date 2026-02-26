@@ -1,0 +1,19 @@
+package com.example.demo.io;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class ProfessorRequest {
+    private String registerNo;
+    
+        private String name;
+        private String occupation;
+        
+}
