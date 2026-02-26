@@ -26,5 +26,8 @@ public class ProfessorEntity {
         private String name;
         private String Occupation;
         private String imageUrl;
+
+
+    
     
 }
