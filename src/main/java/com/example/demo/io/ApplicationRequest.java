@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ApplicationRequest {
 
-    private String applicationId;
+   
     private String name;
     private String registerNo;
     private String email;
@@ -18,5 +18,5 @@ public class ApplicationRequest {
     private String course;
     private String Year;
     private String graduation;
-    private String resumeURL;
+   
 }

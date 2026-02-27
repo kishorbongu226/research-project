@@ -11,6 +11,5 @@ import com.example.demo.io.ProjectResponse;
 public interface ApplicationService {
     
         ApplicationResponse createApplication(ApplicationRequest request,MultipartFile file);
-    void deleteApplication(Long projectId, Long professorId);
-    List<ApplicationResponse> getApplications(String centerId);
+
 }
