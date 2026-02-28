@@ -11,5 +11,8 @@ import com.example.demo.io.ProjectResponse;
 public interface ApplicationService {
     
         ApplicationResponse createApplication(ApplicationRequest request,MultipartFile file);
+        void approveApplication(Long applicationId, Long professorId);
+
+void declineApplication(Long applicationId, Long professorId);
 
 }

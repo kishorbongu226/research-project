@@ -18,5 +18,6 @@ public class ApplicationRequest {
     private String course;
     private String Year;
     private String graduation;
+    private String projectId;
    
 }

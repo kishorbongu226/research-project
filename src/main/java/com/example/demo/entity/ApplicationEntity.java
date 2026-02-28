@@ -3,11 +3,12 @@ package com.example.demo.entity;
 
 
 
-import com.example.demo.Enum.ProjectStatus;
+import com.example.demo.Enum.ApplicationStatus;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -43,6 +44,14 @@ public class ApplicationEntity {
     private String graduation;
     private String resumeURL;
     
+   
+    @Enumerated(EnumType.STRING)
+    private ApplicationStatus status;
+
+    
+    @ManyToOne
+    @JoinColumn(name = "project_id")
+    private ProjectEntity project;
 
     
     

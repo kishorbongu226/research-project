@@ -46,4 +46,6 @@ public class ProjectEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by", nullable = false)
     private ProfessorEntity director;
+
+    
 }

@@ -1,7 +1,10 @@
 package com.example.demo.controller;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,6 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.example.demo.io.ProfessorRequest;
 import com.example.demo.io.ProfessorResponse;
+import com.example.demo.service.ApplicationService;
 import com.example.demo.service.ProfessorService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 public class ProfessorController {
     
     private final ProfessorService professorService;
+    private final ApplicationService applicationService;
     
 
     @PostMapping("/professor/add")
@@ -40,4 +45,25 @@ public class ProfessorController {
         
 
     }
+
+
+
+    @PutMapping("/application/{applicationId}/APPROVE")
+public String approveApplication(
+        @PathVariable Long applicationId,
+        @RequestParam Long professorId) {
+
+    applicationService.approveApplication(applicationId, professorId);
+    return "Application Approved Successfully";
+}
+
+
+@PutMapping("/application/{applicationId}/DECLINE")
+public String declineApplication(
+        @PathVariable Long applicationId,
+        @RequestParam Long professorId) {
+
+    applicationService.declineApplication(applicationId, professorId);
+    return "Application Declined Successfully";
+}
 }

@@ -5,14 +5,20 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.demo.Enum.ApplicationStatus;
 import com.example.demo.entity.ApplicationEntity;
+import com.example.demo.entity.ProjectEntity;
 import com.example.demo.io.ApplicationRequest;
 import com.example.demo.io.ApplicationResponse;
 import com.example.demo.repository.ApplicationRepository;
+import com.example.demo.repository.ProjectRepository;
+
 import com.example.demo.service.ApplicationService;
 import com.example.demo.service.FileUploadService;
 
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 @RequiredArgsConstructor
@@ -20,23 +26,43 @@ import lombok.RequiredArgsConstructor;
 public class ApplicationsServiceImpl implements ApplicationService{
     
     private final ApplicationRepository applicationRepository;
+    private final ProjectRepository projectRepository;
    
     private final FileUploadService fileUploadService;
+    private static final Logger logger =
+        LoggerFactory.getLogger(ApplicationsServiceImpl.class);
 
     @Override
-    public ApplicationResponse createApplication(ApplicationRequest request,MultipartFile file) {
-        String resumeURL = fileUploadService.uploadFile(file);
+public ApplicationResponse createApplication(
+        ApplicationRequest request,
+        MultipartFile file) {
 
-      
+    logger.info("Starting application creation for student: {}", request.getRegisterNo());
 
-        ApplicationEntity application = convertToEntity(request);
+    String resumeURL = fileUploadService.uploadFile(file);
+    logger.info("Resume uploaded successfully. URL: {}", resumeURL);
 
-        application.setResumeURL(resumeURL);
+    ProjectEntity project = projectRepository
+            .findByProjectId(request.getProjectId())
+            .orElseThrow(() -> {
+                logger.error("Project not found with projectId: {}", request.getProjectId());
+                return new RuntimeException("Project not found");
+            });
 
-        application = applicationRepository.save(application);
+    logger.info("Project found: {}", project.getProjectId());
 
-        return convertToResponse(application);
-    }
+    ApplicationEntity application = convertToEntity(request);
+
+    application.setResumeURL(resumeURL);
+    application.setProject(project);
+    application.setStatus(ApplicationStatus.PENDING);
+
+    application = applicationRepository.save(application);
+
+    logger.info("Application saved successfully with ID: {}", application.getId());
+
+    return convertToResponse(application);
+}
 
 
    
@@ -70,6 +96,48 @@ public class ApplicationsServiceImpl implements ApplicationService{
                 .phoneNumber(application.getPhoneNumber())
                 .build();
     }
+
+
+    @Override
+public void approveApplication(Long applicationId, Long professorId) {
+
+    ApplicationEntity application = applicationRepository.findById(applicationId)
+            .orElseThrow(() -> new RuntimeException("Application not found"));
+
+    // 🔥 Only project creator can approve
+    if (!application.getProject()
+            .getDirector()
+            .getId()
+            .equals(professorId)) {
+
+        throw new RuntimeException("Only project creator can approve this application");
+    }
+
+    application.setStatus(ApplicationStatus.APPROVED);
+
+    applicationRepository.save(application);
+}
+
+
+@Override
+public void declineApplication(Long applicationId, Long professorId) {
+
+    ApplicationEntity application = applicationRepository.findById(applicationId)
+            .orElseThrow(() -> new RuntimeException("Application not found"));
+
+    // 🔥 Only project creator can decline
+    if (!application.getProject()
+            .getDirector()
+            .getId()
+            .equals(professorId)) {
+
+        throw new RuntimeException("Only project creator can decline this application");
+    }
+
+    application.setStatus(ApplicationStatus.REJECTED);
+
+    applicationRepository.save(application);
+}
 }
 
 

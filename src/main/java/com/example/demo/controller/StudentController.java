@@ -27,19 +27,28 @@ public class StudentController {
     private static final Logger logger = LoggerFactory.getLogger(StudentController.class);
 
     @PostMapping("/student/apply")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ApplicationResponse apply(@RequestPart("details") String details, @RequestPart("file") MultipartFile file) {
+@ResponseStatus(HttpStatus.CREATED)
+public ApplicationResponse apply(
+        @RequestPart("details") String details,
+        @RequestPart("file") MultipartFile file) {
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        ApplicationRequest request = null;
-        logger.info(details);
-        try {
-            request = objectMapper.readValue(details, ApplicationRequest.class);
-            return applicationService.createApplication(request, file);
-        } catch (JsonProcessingException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "Exception occured while parsing the json" + e.getMessage());
-        }
+    logger.info("Received application request: {}", details);
 
+    ObjectMapper objectMapper = new ObjectMapper();
+
+    try {
+        ApplicationRequest request =
+                objectMapper.readValue(details, ApplicationRequest.class);
+
+        return applicationService.createApplication(request, file);
+
+    } catch (JsonProcessingException e) {
+
+        logger.error("JSON parsing failed: {}", e.getMessage());
+
+        throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "Exception occurred while parsing the json");
     }
+}
 }
