@@ -1,22 +1,29 @@
 package com.example.demo.controller;
 
-import com.example.demo.io.CenterRequest;
-import com.example.demo.io.CenterResponse;
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
+
 import com.example.demo.io.ProjectRequest;
 import com.example.demo.io.ProjectResponse;
 import com.example.demo.service.ProjectService;
-
-import lombok.RequiredArgsConstructor;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.util.List;
+import lombok.RequiredArgsConstructor;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequiredArgsConstructor
 public class ProjectController {
@@ -45,7 +52,7 @@ public class ProjectController {
     }
 
     //  Delete Project (Director Only)
-    @DeleteMapping("/{projectId}")
+    @DeleteMapping("/projects/{projectId}")
     public String deleteProject(
             @PathVariable Long projectId,
             @RequestParam Long professorId) {
@@ -61,4 +68,16 @@ public class ProjectController {
 
         return projectService.getProjectsByCenter(centerId);
     }
+    
+
+    @GetMapping("/projects")
+public List<ProjectResponse> getAllProjects() {
+    return projectService.getAllProjects();
+}
+
+
+    @GetMapping("/project/{projectId}")
+public ProjectResponse getProjectById(@PathVariable String projectId) {
+    return projectService.getProjectByProjectId(projectId);
+}
 }

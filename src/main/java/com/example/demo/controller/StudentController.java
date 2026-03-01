@@ -3,7 +3,9 @@ package com.example.demo.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -13,12 +15,15 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.example.demo.io.ApplicationRequest;
 import com.example.demo.io.ApplicationResponse;
+import com.example.demo.io.StudentProfileResponse;
 import com.example.demo.service.ApplicationService;
+import com.example.demo.service.StudentService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RequiredArgsConstructor
 @RestController
 public class StudentController {
@@ -51,4 +56,13 @@ public ApplicationResponse apply(
                 "Exception occurred while parsing the json");
     }
 }
+
+private final StudentService studentService;
+
+    @GetMapping("/student/profile/{registerNo}")
+    public StudentProfileResponse getStudentProfile(
+            @PathVariable String registerNo) {
+
+        return studentService.getStudentProfile(registerNo);
+    }
 }

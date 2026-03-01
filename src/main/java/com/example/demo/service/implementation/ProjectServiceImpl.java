@@ -102,4 +102,22 @@ public class ProjectServiceImpl implements ProjectService {
                 .directorName(project.getDirector().getName())
                 .build();
     }
+
+    @Override
+public ProjectResponse getProjectByProjectId(String projectId) {
+
+    ProjectEntity project = projectRepository
+            .findByProjectId(projectId)
+            .orElseThrow(() -> new RuntimeException("Project not found"));
+
+    return convertToResponse(project);
+}
+@Override
+public List<ProjectResponse> getAllProjects() {
+
+    return projectRepository.findAll()
+            .stream()
+            .map(this::convertToResponse)
+            .toList();
+}
 }

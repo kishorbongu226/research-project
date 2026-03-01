@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,6 +28,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequiredArgsConstructor
 public class CenterController {
@@ -69,29 +71,18 @@ public class CenterController {
         }
     }
     
-    @GetMapping("/centers/{centerId}")
+   @GetMapping("/centers/{centerId}")
+public CenterDetailsResponse fetchCategory(@PathVariable String centerId){
 
-    public CenterDetailsResponse fetchCategory(@PathVariable String centerId){
+    CenterEntity center = centerRepository.findByCenterId(centerId)
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Center not found"));
 
-        CenterEntity center = null;
-        Optional<CenterEntity> optionalcenter = centerRepository.findByCenterId(centerId);
-        if(optionalcenter.isPresent()){
-            center = optionalcenter.get(); 
-        }
+    ProfessorEntity professor = professorRepository
+        .findByRegisterNo(center.getProfessor().getRegisterNo())
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Professor not found"));
 
-        ProfessorEntity professor = null;
-          Optional<ProfessorEntity> optionalprofessor =
-            professorRepository.findByRegisterNo(center.getProfessor().getRegisterNo());
-
-
-            if(optionalprofessor.isPresent()){
-                professor = optionalprofessor.get();
-            }
-
-        CenterDetailsResponse  centerDetails= centerService.getCenterDetails(center,professor);
-
-        return centerDetails;
-    }
+    return centerService.getCenterDetails(center, professor);
+}
 
     
     

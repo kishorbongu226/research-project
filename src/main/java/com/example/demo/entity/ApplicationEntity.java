@@ -34,16 +34,13 @@ public class ApplicationEntity {
     private Long id;
     @Column(unique = true)
     private String applicationId;
-    private String name;
-    private String registerNo;
-    private String email;
-    private String phoneNumber;
-    private String branch;
-    private String course;
-    private String Year;
+   
     private String graduation;
     private String resumeURL;
     
+    @ManyToOne
+    @JoinColumn(name = "student_id")
+    private StudentEntity student;
    
     @Enumerated(EnumType.STRING)
     private ApplicationStatus status;

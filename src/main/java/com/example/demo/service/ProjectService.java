@@ -12,4 +12,6 @@ public interface ProjectService {
     ProjectResponse createProject(ProjectRequest request,MultipartFile file);
     void deleteProject(Long projectId, Long professorId);
     List<ProjectResponse> getProjectsByCenter(String centerId);
+    ProjectResponse getProjectByProjectId(String projectId);
+    List<ProjectResponse> getAllProjects();
 }
