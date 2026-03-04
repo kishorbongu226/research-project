@@ -1,96 +1,41 @@
-// package com.example.demo.config;
+package com.example.demo.config;
 
-// import java.util.List;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.SecurityFilterChain;
 
-// import org.springframework.context.annotation.Bean;
-// import org.springframework.context.annotation.Configuration;
-// import org.springframework.http.HttpMethod;
-// import org.springframework.security.authentication.AuthenticationManager;
-// import org.springframework.security.authentication.ProviderManager;
-// import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-// import org.springframework.security.config.Customizer;
-// import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-// import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-// import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-// import org.springframework.security.config.http.SessionCreationPolicy;
-// import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-// import org.springframework.security.crypto.password.PasswordEncoder;
-// import org.springframework.security.web.SecurityFilterChain;
-// import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-// import org.springframework.web.cors.CorsConfiguration;
-// import org.springframework.web.cors.CorsConfigurationSource;
-// import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import jakarta.servlet.http.HttpServletResponse;
 
-// import com.example.demo.filter.JwtRequestFilter;
-// import com.example.demo.service.implementation.AppUserDetailsService;
+@Configuration
+public class SecurityConfig {
 
-// import lombok.RequiredArgsConstructor;
+    @Bean
+    public AuthenticationManager authManager(AuthenticationConfiguration authConfig) throws Exception {
+        return authConfig.getAuthenticationManager();
+    }
 
-// @Configuration
-// @EnableWebSecurity
-// @RequiredArgsConstructor
-// public class SecurityConfig {
-
-//     private final JwtRequestFilter jwtRequestFilter;
-
-//     @Bean
-//     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
-//         http
-//             .cors(Customizer.withDefaults()) // ✅ now works
-//             .csrf(AbstractHttpConfigurer::disable)
-//             .authorizeHttpRequests(auth -> auth
-//                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-//                 .requestMatchers("/login", "/encode", "/actuator/health", "/error").permitAll()
-//                 .requestMatchers("/categories", "/items", "/orders", "/payments", "/dashboard")
-//                     .hasAnyRole("ADMIN")
-//                 .requestMatchers("/admin/**").hasRole("ADMIN")
-//                 .anyRequest().authenticated()
-//             )
-//             .sessionManagement(session ->
-//                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-//             .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-
-//         return http.build();
-//     }
-
-//     @Bean
-//     public CorsConfigurationSource corsConfigurationSource() {
-
-//         CorsConfiguration config = new CorsConfiguration();
-
-//         config.setAllowedOriginPatterns(List.of(
-//             "http://localhost:5173",
-//             "https://*.netlify.app",
-//             "https://*.onrender.com"
-//         ));
-
-//         config.setAllowedMethods(List.of(
-//             "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"
-//         ));
-
-//         config.setAllowedHeaders(List.of("*"));
-//         config.setAllowCredentials(true);
-
-//         UrlBasedCorsConfigurationSource source =
-//                 new UrlBasedCorsConfigurationSource();
-//         source.registerCorsConfiguration("/**", config);
-
-//         return source;
-//     }
-
-//     @Bean
-//     public PasswordEncoder passwordEncoder() {
-//         return new BCryptPasswordEncoder();
-//     }
-
-//     @Bean
-//     public AuthenticationManager authenticationManager(AppUserDetailsService appUserDetailsService,PasswordEncoder passwordEncoder) {
-
-//         DaoAuthenticationProvider provider = new DaoAuthenticationProvider(appUserDetailsService);
-//         provider.setPasswordEncoder(passwordEncoder);
-
-//         return new ProviderManager(provider);
-//     }
-// }
-
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        return http
+                .csrf(csrf -> csrf.disable()) // disable CSRF for simplicity (for APIs)
+                .cors(cors -> {}) // enable CORS if needed (e.g., localhost:3000)
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/login").permitAll()  // login endpoint open
+                        .anyRequest().authenticated()           // all other endpoints protected
+                )
+                .httpBasic(basic -> basic
+                        .authenticationEntryPoint((req, res, authEx) -> {
+                            // send 401 if not authenticated
+                            res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+                        })
+                )
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Basic Auth: stateless
+                )
+                .build();
+    }
+}

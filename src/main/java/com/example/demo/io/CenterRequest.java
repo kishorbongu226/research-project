@@ -16,7 +16,7 @@ public class CenterRequest {
     private String name;
     private String centerId;
     private String description;
-    private ProjectStatus projectStatus;
-    private String professorId;
+    // private ProjectStatus projectStatus;
+   
     
 }

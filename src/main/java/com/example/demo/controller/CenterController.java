@@ -1,9 +1,11 @@
 package com.example.demo.controller;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,29 +41,31 @@ public class CenterController {
 
     @PostMapping("/centers/add")
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasRole('ADMIN')")
     public CenterResponse addCategory(@RequestPart("center") String centerString,
-                                        @RequestPart("file") MultipartFile file)
+    @RequestPart("file") MultipartFile file,Principal principal)
     {
         ObjectMapper objectMapper = new ObjectMapper();
         CenterRequest request=null;
         try {
             request=objectMapper.readValue(centerString, CenterRequest.class);
-            return centerService.createCenter(request, file);
+            return centerService.createCenter(request, file,principal);
         } catch (JsonProcessingException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Exception occured while parsing the json"+e.getMessage());
         }
         
-
+        
     }
-
+    
     @GetMapping("/centers")
     public List<CenterResponse> fetchCategories()
     {
         return centerService.readCenters();
     }
-
+    
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/centers/{centerId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public void remove(@PathVariable String centerId)
     {
         try {
@@ -71,19 +75,20 @@ public class CenterController {
         }
     }
     
-   @GetMapping("/centers/{centerId}")
-public CenterDetailsResponse fetchCategory(@PathVariable String centerId){
-
-    CenterEntity center = centerRepository.findByCenterId(centerId)
+    @GetMapping("/centers/{centerId}")
+    public CenterDetailsResponse fetchCategory(@PathVariable String centerId){
+        
+        CenterEntity center = centerRepository.findByCenterId(centerId)
         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Center not found"));
-
-    ProfessorEntity professor = professorRepository
+        
+        ProfessorEntity professor = professorRepository
         .findByRegisterNo(center.getProfessor().getRegisterNo())
         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Professor not found"));
-
-    return centerService.getCenterDetails(center, professor);
-}
-
+        
+        return centerService.getCenterDetails(center, professor);
+    }
     
     
+    
 }
+// DONE.............

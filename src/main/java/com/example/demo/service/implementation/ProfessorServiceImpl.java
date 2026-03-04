@@ -3,10 +3,8 @@ package com.example.demo.service.implementation;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.example.demo.entity.CenterEntity;
+import com.example.demo.Enum.Role;
 import com.example.demo.entity.ProfessorEntity;
-import com.example.demo.io.CenterRequest;
-import com.example.demo.io.CenterResponse;
 import com.example.demo.io.ProfessorRequest;
 import com.example.demo.io.ProfessorResponse;
 import com.example.demo.repository.ProfessorRepository;
@@ -38,7 +36,8 @@ public class ProfessorServiceImpl implements  ProfessorService {
                 .registerNo(request.getRegisterNo())
                 .name(request.getName())
                 .Occupation(request.getOccupation())
-
+                .password(request.getPassword())
+                .role(Role.ADMIN)
                 .build();
 
     }

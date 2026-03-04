@@ -16,11 +16,11 @@ public class ProjectRequest {
     private String projectId;
     private String title;
     private String description;
-    private ProjectStatus projectStatus;
+  
 
     private String responsibilities;
     private String skillRequirements;
 
     private String centerId;
-    private String professorId;
+    
 }

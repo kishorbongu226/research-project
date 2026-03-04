@@ -41,7 +41,7 @@
     </appender>
 
     <!-- ================= Logging Levels ================= -->
-    <root level="INFO">
+    <root level="DEBUG">
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="FILE"/>
     </root>

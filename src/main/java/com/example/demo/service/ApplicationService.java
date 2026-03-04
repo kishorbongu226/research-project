@@ -9,9 +9,9 @@ import java.util.List;
 public interface ApplicationService {
     
         ApplicationResponse createApplication(ApplicationRequest request,MultipartFile file);
-        void approveApplication(Long applicationId, Long professorId);
+        void approveApplication(String applicationId, Long professorId);
 
-void declineApplication(Long applicationId, Long professorId);
+void declineApplication(String applicationId, Long professorId);
 List<ApplicationResponse> getPendingApplications(Long professorId);
 List<ApplicationResponse> getApprovedApplications(Long professorId);
 

@@ -1,6 +1,7 @@
 package com.example.demo.service.implementation;
 
 import java.util.UUID;
+import java.security.Principal;
 import java.util.List;
 
 import com.example.demo.service.ApplicationService;
@@ -45,10 +46,7 @@ public ApplicationResponse createApplication(
 
     logger.info("Starting application creation for registerNo: {}", request.getRegisterNo());
 
-    // 1️⃣ Validate Register Number (example: 8 digits)
-    if (!request.getRegisterNo().matches("\\d{8}")) {
-        throw new RuntimeException("Invalid Register Number format");
-    }
+
 
     // 2️⃣ Upload Resume
     String resumeURL = fileUploadService.uploadFile(file);
@@ -87,6 +85,7 @@ public ApplicationResponse createApplication(
             .applicationId(UUID.randomUUID().toString())
             .student(student)
             .project(project)
+            .graduation(request.getGraduation())
             .resumeURL(resumeURL)
             .status(ApplicationStatus.PENDING)
             .build();
@@ -141,16 +140,16 @@ public ApplicationResponse createApplication(
 
 
     @Override
-public void approveApplication(Long applicationId, Long professorId) {
+public void approveApplication(String applicationId, Long professorID) {
 
-    ApplicationEntity application = applicationRepository.findById(applicationId)
+    ApplicationEntity application = applicationRepository.findByApplicationId(applicationId)
             .orElseThrow(() -> new RuntimeException("Application not found"));
 
     // 🔥 Only project creator can approve
     if (!application.getProject()
             .getDirector()
             .getId()
-            .equals(professorId)) {
+            .equals(professorID)) {
 
         throw new RuntimeException("Only project creator can approve this application");
     }
@@ -162,16 +161,16 @@ public void approveApplication(Long applicationId, Long professorId) {
 
 
 @Override
-public void declineApplication(Long applicationId, Long professorId) {
+public void declineApplication(String applicationId, Long professorID) {
 
-    ApplicationEntity application = applicationRepository.findById(applicationId)
+    ApplicationEntity application = applicationRepository.findByApplicationId(applicationId)
             .orElseThrow(() -> new RuntimeException("Application not found"));
 
     // 🔥 Only project creator can decline
     if (!application.getProject()
             .getDirector()
             .getId()
-            .equals(professorId)) {
+            .equals(professorID)) {
 
         throw new RuntimeException("Only project creator can decline this application");
     }

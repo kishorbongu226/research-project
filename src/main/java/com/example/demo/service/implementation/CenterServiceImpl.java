@@ -1,5 +1,6 @@
 package com.example.demo.service.implementation;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -7,6 +8,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.demo.Enum.ProjectStatus;
 import com.example.demo.entity.CenterEntity;
 import com.example.demo.entity.ProfessorEntity;
 import com.example.demo.io.CenterDetailsResponse;
@@ -30,12 +32,12 @@ public class CenterServiceImpl implements CenterService{
     private final FileUploadService fileUploadService;
 
     @Override
-    public CenterResponse createCenter(CenterRequest request,MultipartFile file) {
+    public CenterResponse createCenter(CenterRequest request,MultipartFile file,Principal principal) {
         String imgUrl = fileUploadService.uploadFile(file);
         CenterEntity newCenter = convertToEntity(request);
         newCenter.setImgUrl(imgUrl);
-        
-        Optional<ProfessorEntity> optionalprofessor = professorRepository.findByRegisterNo(request.getProfessorId());
+        String professorId = principal.getName();
+        Optional<ProfessorEntity> optionalprofessor = professorRepository.findByRegisterNo(professorId);
         ProfessorEntity professor = optionalprofessor.get();
         newCenter.setProfessor(professor);
         newCenter = centerRepository.save(newCenter);
@@ -71,7 +73,7 @@ public class CenterServiceImpl implements CenterService{
                 .name(request.getName())
                 .centerId(request.getCenterId())
                 .description(request.getDescription())
-                .projectStatus(request.getProjectStatus())
+                .projectStatus(ProjectStatus.PROJECTS_AVAILABLE)
                 .build();
 
     }

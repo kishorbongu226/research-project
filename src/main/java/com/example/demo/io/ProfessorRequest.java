@@ -15,5 +15,6 @@ public class ProfessorRequest {
     
         private String name;
         private String occupation;
+        private String password;
         
 }

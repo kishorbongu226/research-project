@@ -1,8 +1,10 @@
 package com.example.demo.controller;
 
+import java.security.Principal;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,23 +38,25 @@ public class ProjectController {
 
     @PostMapping("/projects/add")
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasRole('ADMIN')")
     public ProjectResponse addCategory(@RequestPart("project") String projectString,
-                                        @RequestPart("file") MultipartFile file)
+    @RequestPart("file") MultipartFile file,Principal principal)
     {
         ObjectMapper objectMapper = new ObjectMapper();
         ProjectRequest request=null;
         try {
             request=objectMapper.readValue(projectString, ProjectRequest.class);
-            return projectService.createProject(request, file);
+            return projectService.createProject(request, file,principal);
         } catch (JsonProcessingException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Exception occured while parsing the json"+e.getMessage());
         }
         
-
+        
     }
-
+    
     //  Delete Project (Director Only)
     @DeleteMapping("/projects/{projectId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public String deleteProject(
             @PathVariable Long projectId,
             @RequestParam Long professorId) {
@@ -81,3 +85,5 @@ public ProjectResponse getProjectById(@PathVariable String projectId) {
     return projectService.getProjectByProjectId(projectId);
 }
 }
+
+// DONE.........

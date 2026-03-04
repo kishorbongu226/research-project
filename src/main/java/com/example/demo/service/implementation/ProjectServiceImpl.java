@@ -1,5 +1,13 @@
 package com.example.demo.service.implementation;
 
+import java.security.Principal;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.example.demo.Enum.ProjectStatus;
 import com.example.demo.entity.CenterEntity;
 import com.example.demo.entity.ProfessorEntity;
 import com.example.demo.entity.ProjectEntity;
@@ -12,11 +20,6 @@ import com.example.demo.service.FileUploadService;
 import com.example.demo.service.ProjectService;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,19 +31,15 @@ public class ProjectServiceImpl implements ProjectService {
     private final FileUploadService fileUploadService;
 
     @Override
-    public ProjectResponse createProject(ProjectRequest request,MultipartFile file) {
+    public ProjectResponse createProject(ProjectRequest request,MultipartFile file,Principal principal) {
         String imgUrl = fileUploadService.uploadFile(file);
 
         CenterEntity center = centerRepository.findByCenterId(request.getCenterId())
                 .orElseThrow(() -> new RuntimeException("Center not found"));
 
-        ProfessorEntity professor = professorRepository.findByRegisterNo(request.getProfessorId())
+        ProfessorEntity professor = professorRepository.findByRegisterNo(principal.getName())
                 .orElseThrow(() -> new RuntimeException("Professor not found"));
-
-        //  Validation: Only Center Director Can Create
-        if (!center.getProfessor().getId().equals(professor.getId())) {
-            throw new RuntimeException("Only the director of this center can create project");
-        }
+                
 
         ProjectEntity project = convertToEntity(request);
         project.setCenter(center);
@@ -82,7 +81,7 @@ public class ProjectServiceImpl implements ProjectService {
                 .projectId(request.getProjectId())
                 .title(request.getTitle())
                 .description(request.getDescription())
-                .projectStatus(request.getProjectStatus())
+                .projectStatus(ProjectStatus.PROJECTS_AVAILABLE)
                 .responsibilities(request.getResponsibilities())
                 .skillRequirements(request.getSkillRequirements())
                 .build();
