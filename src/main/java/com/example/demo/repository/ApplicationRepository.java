@@ -13,10 +13,8 @@ public interface ApplicationRepository extends JpaRepository<ApplicationEntity, 
 
     List<ApplicationEntity> findByProject_ProjectId(String projectId);
     List<ApplicationEntity> findByProject_Director_Id(Long professorId);
-    List<ApplicationEntity> findByProject_Director_IdAndStatus(
-        Long professorId,
-        ApplicationStatus status
-);
+    List<ApplicationEntity> findByProject_Director_IdAndStatus(Long professorId,ApplicationStatus status);
     Optional<ApplicationEntity> findByApplicationId(String applicationId);
+    List<ApplicationEntity> findByProject_ProjectIdAndStatus(String projectId,ApplicationStatus status);
     
 }

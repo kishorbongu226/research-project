@@ -12,6 +12,8 @@ import com.example.demo.service.FileUploadService;
 import com.example.demo.service.ProfessorService;
 
 import lombok.RequiredArgsConstructor;
+import java.util.List;
+
 
 @Service
 @RequiredArgsConstructor
@@ -40,6 +42,9 @@ public class ProfessorServiceImpl implements  ProfessorService {
                 .role(Role.ADMIN)
                 .build();
 
+    }
+    public List<ProfessorEntity> getAdminProfessors() {
+        return professorRepository.findByRole(Role.ADMIN);
     }
 
     private ProfessorResponse convertToResponse(ProfessorEntity newProfessor) {

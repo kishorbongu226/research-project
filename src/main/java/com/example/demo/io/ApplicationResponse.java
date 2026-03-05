@@ -23,7 +23,7 @@ public class ApplicationResponse {
     private String course;
     private String year;
     private String graduation;
-
+    private String profileImageUrl;
     private String resumeURL;
 
     private String centerName;    // 🔥 Needed for frontend

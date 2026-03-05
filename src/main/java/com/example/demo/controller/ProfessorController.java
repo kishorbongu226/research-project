@@ -102,5 +102,10 @@ public class ProfessorController {
         Long professorID = professor.getId();
         return applicationService.getApprovedApplications(professorID);
     }
+
+    @GetMapping("/admins")
+    public List<ProfessorEntity> getAdminProfessors() {
+        return professorService.getAdminProfessors();
+    }
 }
 // Done..........

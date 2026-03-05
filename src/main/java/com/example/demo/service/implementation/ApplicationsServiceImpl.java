@@ -1,11 +1,7 @@
 package com.example.demo.service.implementation;
 
-import java.util.UUID;
-import java.security.Principal;
 import java.util.List;
-
-import com.example.demo.service.ApplicationService;
-
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +17,7 @@ import com.example.demo.io.ApplicationResponse;
 import com.example.demo.repository.ApplicationRepository;
 import com.example.demo.repository.ProjectRepository;
 import com.example.demo.repository.StudentRepository;
-
+import com.example.demo.service.ApplicationService;
 import com.example.demo.service.FileUploadService;
 
 import lombok.RequiredArgsConstructor;
@@ -131,7 +127,7 @@ public ApplicationResponse createApplication(
             .graduation(application.getGraduation())
             .resumeURL(application.getResumeURL())
             .status(application.getStatus())
-
+            .profileImageUrl(application.getStudent().getProfileImageUrl())
             .centerName(application.getProject().getCenter().getName())
             .projectName(application.getProject().getTitle())
 
@@ -200,6 +196,19 @@ public List<ApplicationResponse> getApprovedApplications(Long professorId) {
     List<ApplicationEntity> applications =
             applicationRepository.findByProject_Director_IdAndStatus(
                     professorId,
+                    ApplicationStatus.APPROVED
+            );
+
+    return applications.stream()
+            .map(this::convertToResponse)
+            .toList();
+}
+@Override
+public List<ApplicationResponse> getStudentsByProject(String projectId) {
+
+    List<ApplicationEntity> applications =
+            applicationRepository.findByProject_ProjectIdAndStatus(
+                    projectId,
                     ApplicationStatus.APPROVED
             );
 

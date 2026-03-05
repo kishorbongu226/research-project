@@ -17,9 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.example.demo.io.ApplicationResponse;
 import com.example.demo.io.ProjectRequest;
 import com.example.demo.io.ProjectResponse;
 import com.example.demo.service.ProjectService;
+import com.example.demo.service.ApplicationService;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -31,6 +34,7 @@ import lombok.RequiredArgsConstructor;
 public class ProjectController {
 
     private final ProjectService projectService;
+    private final ApplicationService applicationService;
 
     //  Create Project (Director Only)
     
@@ -73,6 +77,12 @@ public class ProjectController {
         return projectService.getProjectsByCenter(centerId);
     }
     
+    @GetMapping("/project/{projectId}/students")
+public List<ApplicationResponse> getStudentsByProject(
+        @PathVariable String projectId) {
+
+    return applicationService.getStudentsByProject(projectId);
+}
 
     @GetMapping("/projects")
 public List<ProjectResponse> getAllProjects() {

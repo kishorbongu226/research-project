@@ -41,7 +41,7 @@ public class MyUserDetailsService implements UserDetailsService {
 
         return User.builder()
                 .username(student.getRegisterNo())
-                .password(student.getPassword())
+                .password("{noop}" + student.getPassword())
                 .roles(student.getRole().toString()) // Spring adds ROLE_ automatically
                 .build();
     }
