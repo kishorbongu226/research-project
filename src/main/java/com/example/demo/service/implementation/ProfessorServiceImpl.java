@@ -1,10 +1,13 @@
 package com.example.demo.service.implementation;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.Enum.Role;
 import com.example.demo.entity.ProfessorEntity;
+import com.example.demo.io.AdminProfileResponse;
 import com.example.demo.io.ProfessorRequest;
 import com.example.demo.io.ProfessorResponse;
 import com.example.demo.repository.ProfessorRepository;
@@ -12,7 +15,6 @@ import com.example.demo.service.FileUploadService;
 import com.example.demo.service.ProfessorService;
 
 import lombok.RequiredArgsConstructor;
-import java.util.List;
 
 
 @Service
@@ -43,8 +45,13 @@ public class ProfessorServiceImpl implements  ProfessorService {
                 .build();
 
     }
-    public List<ProfessorEntity> getAdminProfessors() {
-        return professorRepository.findByRole(Role.ADMIN);
+public List<AdminProfileResponse> getAdminProfessors() {
+
+        List<ProfessorEntity> admins = professorRepository.findByRole(Role.ADMIN);
+
+        return admins.stream()
+                .map(this::convertToProfileResponse)
+                .toList();
     }
 
     private ProfessorResponse convertToResponse(ProfessorEntity newProfessor) {
@@ -54,5 +61,14 @@ public class ProfessorServiceImpl implements  ProfessorService {
                       .Occupation(newProfessor.getOccupation())
                       .registerNo(newProfessor.getRegisterNo())
                       .build();
+    }
+
+    private AdminProfileResponse convertToProfileResponse(ProfessorEntity newProfessor) {
+        return AdminProfileResponse.builder()
+                .imageURL(newProfessor.getImageUrl())
+                .name(newProfessor.getName())
+                .Occupation(newProfessor.getOccupation())
+                .registerNo(newProfessor.getRegisterNo())
+                .build();
     }
 }

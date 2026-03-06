@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -10,7 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.example.demo.entity.ProfessorEntity;
+import com.example.demo.io.AdminProfileResponse;
 import com.example.demo.io.ApplicationResponse;
 import com.example.demo.io.ProfessorRequest;
 import com.example.demo.io.ProfessorResponse;
@@ -104,9 +105,28 @@ public class ProfessorController {
     }
 
     @GetMapping("/admins")
-    public List<ProfessorEntity> getAdminProfessors() {
+    public List<AdminProfileResponse> getAdminProfessors() {
         return professorService.getAdminProfessors();
     }
+    @GetMapping("/admins/{professorID}")
+    public AdminProfileResponse getAdminProfessors(@PathVariable  String professorID) {
+        Optional<ProfessorEntity> optionalprofessorEntity = professorRepository.findByRegisterNo(professorID);
+        ProfessorEntity professor = null;
+        if(optionalprofessorEntity.isPresent()){
+            professor = optionalprofessorEntity.get();
+        }
+        return convertToProfileResponse(professor);
+    }
+
+      private AdminProfileResponse convertToProfileResponse(ProfessorEntity newProfessor) {
+        return AdminProfileResponse.builder()
+                .imageURL(newProfessor.getImageUrl())
+                .name(newProfessor.getName())
+                .Occupation(newProfessor.getOccupation())
+                .registerNo(newProfessor.getRegisterNo())
+                .build();
+    }
+
 
     
 }

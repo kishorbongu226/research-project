@@ -11,7 +11,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.example.demo.Enum.CenterStatus;
-import com.example.demo.Enum.ProjectStatus;
 import com.example.demo.entity.CenterEntity;
 import com.example.demo.entity.ProfessorEntity;
 import com.example.demo.io.CenterDetailsResponse;
@@ -129,7 +128,7 @@ public CenterResponse updateCenter(String centerID, CenterRequest request, Multi
 
     private CenterDetailsResponse convertToResponse(CenterEntity center, ProfessorEntity professor){
         return CenterDetailsResponse.builder()
-        .imageUrl(professor.getImageUrl())
+        .imgUrl(center.getImgUrl())
         .professorName(professor.getName())
         .professorOccupation(professor.getOccupation())
         .centerName(center.getName())

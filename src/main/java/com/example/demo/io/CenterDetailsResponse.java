@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CenterDetailsResponse {
 
-    private String imageUrl;
+    private String imgUrl;
     private String professorName;
     private String professorOccupation;
     private String centerName;
