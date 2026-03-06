@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -56,6 +57,29 @@ public class CenterController {
         
         
     }
+
+    @PutMapping("/centers/edit/{id}")
+@PreAuthorize("hasRole('ADMIN')")
+public CenterResponse editCenter(
+        @PathVariable String id,
+        @RequestPart("center") String centerString,
+        @RequestPart(value = "file", required = false) MultipartFile file,
+        Principal principal) {
+
+    ObjectMapper objectMapper = new ObjectMapper();
+    CenterRequest request = null;
+
+    try {
+        request = objectMapper.readValue(centerString, CenterRequest.class);
+        return centerService.updateCenter(id, request, file, principal);
+
+    } catch (JsonProcessingException e) {
+        throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "Exception occurred while parsing JSON " + e.getMessage()
+        );
+    }
+}
     
     @GetMapping("/centers")
     public List<CenterResponse> fetchCategories()

@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import com.example.demo.Enum.CenterStatus;
 import com.example.demo.Enum.ProjectStatus;
 
 import jakarta.persistence.Column;
@@ -32,7 +33,7 @@ public class CenterEntity {
     private String name;
     private String imgUrl;
     private String description;
-    private ProjectStatus projectStatus;
+    private CenterStatus projectStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "professor_id", nullable = false)

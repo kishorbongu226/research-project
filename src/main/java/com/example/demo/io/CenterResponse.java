@@ -1,6 +1,6 @@
 package com.example.demo.io;
 
-import com.example.demo.Enum.ProjectStatus;
+import com.example.demo.Enum.CenterStatus;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,6 +19,6 @@ public class CenterResponse {
     private String centerId;
     private String imgUrl;
     private String description;
-    private ProjectStatus projectStatus;
+    private CenterStatus projectStatus;
     
 }

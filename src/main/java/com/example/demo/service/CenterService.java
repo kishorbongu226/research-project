@@ -18,5 +18,6 @@ public interface CenterService {
     List<CenterResponse> readCenters();
     void assignProfessorToCenter(String centerId, String professorRegisterNo);
     CenterDetailsResponse getCenterDetails(CenterEntity center,ProfessorEntity professorEntity);
+    CenterResponse updateCenter(String id, CenterRequest request, MultipartFile file, Principal principal);
     
 }

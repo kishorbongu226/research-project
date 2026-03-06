@@ -107,5 +107,7 @@ public class ProfessorController {
     public List<ProfessorEntity> getAdminProfessors() {
         return professorService.getAdminProfessors();
     }
+
+    
 }
 // Done..........

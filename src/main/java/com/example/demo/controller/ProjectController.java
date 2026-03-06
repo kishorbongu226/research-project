@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,12 +18,14 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.example.demo.Enum.ProjectStatus;
+import com.example.demo.entity.ProjectEntity;
 import com.example.demo.io.ApplicationResponse;
 import com.example.demo.io.ProjectRequest;
 import com.example.demo.io.ProjectResponse;
-import com.example.demo.service.ProjectService;
+import com.example.demo.repository.ProjectRepository;
 import com.example.demo.service.ApplicationService;
-
+import com.example.demo.service.ProjectService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -35,6 +38,7 @@ public class ProjectController {
 
     private final ProjectService projectService;
     private final ApplicationService applicationService;
+    private final ProjectRepository projectRepository;
 
     //  Create Project (Director Only)
     
@@ -94,6 +98,19 @@ public List<ProjectResponse> getAllProjects() {
 public ProjectResponse getProjectById(@PathVariable String projectId) {
     return projectService.getProjectByProjectId(projectId);
 }
+
+@PostMapping("/project/completed/{projectId}")
+public void  changeProjectStatus(@PathVariable String projectId){
+    Optional<ProjectEntity> optionalProject = projectRepository.findByProjectId(projectId);
+    ProjectEntity project = null;
+    if(optionalProject.isPresent()){
+        project = optionalProject.get();
+    }
+    project.setProjectStatus(ProjectStatus.COMPLETED);
+    projectRepository.save(project);
+    
+}
+
 }
 
 // DONE.........

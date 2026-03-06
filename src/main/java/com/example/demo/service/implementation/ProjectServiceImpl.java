@@ -81,7 +81,7 @@ public class ProjectServiceImpl implements ProjectService {
                 .projectId(request.getProjectId())
                 .title(request.getTitle())
                 .description(request.getDescription())
-                .projectStatus(ProjectStatus.PROJECTS_AVAILABLE)
+                .projectStatus(ProjectStatus.ONGOING)
                 .responsibilities(request.getResponsibilities())
                 .skillRequirements(request.getSkillRequirements())
                 .build();

@@ -5,9 +5,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
+import com.example.demo.Enum.CenterStatus;
 import com.example.demo.Enum.ProjectStatus;
 import com.example.demo.entity.CenterEntity;
 import com.example.demo.entity.ProfessorEntity;
@@ -45,6 +48,41 @@ public class CenterServiceImpl implements CenterService{
     }
 
     @Override
+public CenterResponse updateCenter(String centerID, CenterRequest request, MultipartFile file, Principal principal) {
+
+    Optional<CenterEntity> optionalCenter = centerRepository.findByCenterId(centerID);
+
+    if(optionalCenter.isEmpty()){
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Center not found");
+    }
+
+    CenterEntity center = optionalCenter.get();
+
+    // update fields
+    center.setName(request.getName());
+    center.setCenterId(request.getCenterId());
+    center.setDescription(request.getDescription());
+    center.setProjectStatus(CenterStatus.PROJECTS_AVAILABLE);
+
+
+    // update image only if new image uploaded
+    if(file != null && !file.isEmpty()){
+        String imgUrl = fileUploadService.uploadFile(file);
+        center.setImgUrl(imgUrl);
+    }
+
+    // update professor (if needed)
+    String professorId = principal.getName();
+    Optional<ProfessorEntity> optionalProfessor = professorRepository.findByRegisterNo(professorId);
+
+    optionalProfessor.ifPresent(center::setProfessor);
+
+    center = centerRepository.save(center);
+
+    return convertToResponse(center);
+}
+
+    @Override
     public void deleteCenter(String centerId) {
         CenterEntity existingCategory = centerRepository.findByCenterId(centerId)
                             .orElseThrow(() -> new RuntimeException("Category not found : "+centerId));
@@ -73,7 +111,7 @@ public class CenterServiceImpl implements CenterService{
                 .name(request.getName())
                 .centerId(request.getCenterId())
                 .description(request.getDescription())
-                .projectStatus(ProjectStatus.PROJECTS_AVAILABLE)
+                .projectStatus(CenterStatus.PROJECTS_AVAILABLE)
                 .build();
 
     }
