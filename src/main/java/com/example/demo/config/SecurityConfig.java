@@ -24,7 +24,8 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) // disable CSRF for simplicity (for APIs)
                 .cors(cors -> {}) // enable CORS if needed (e.g., localhost:3000)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login").permitAll()  // login endpoint open
+                        .requestMatchers("/login").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
                         .anyRequest().authenticated()           // all other endpoints protected
                 )
                 .httpBasic(basic -> basic
