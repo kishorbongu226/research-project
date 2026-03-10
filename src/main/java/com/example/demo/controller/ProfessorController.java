@@ -29,7 +29,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
-
+@CrossOrigin("https://localhost:3000")
 @RestController
 @RequiredArgsConstructor
 public class ProfessorController {
