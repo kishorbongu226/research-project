@@ -130,7 +130,8 @@ public ApplicationResponse createApplication(
             .profileImageUrl(application.getStudent().getProfileImageUrl())
             .centerName(application.getProject().getCenter().getName())
             .projectName(application.getProject().getTitle())
-
+            .projectStatus(application.getProject().getProjectStatus())
+            .projectImageUrl(application.getProject().getImageUrl())
             .build();
 }
 
@@ -209,6 +210,20 @@ public List<ApplicationResponse> getStudentsByProject(String projectId) {
     List<ApplicationEntity> applications =
             applicationRepository.findByProject_ProjectIdAndStatus(
                     projectId,
+                    ApplicationStatus.APPROVED
+            );
+
+    return applications.stream()
+            .map(this::convertToResponse)
+            .toList();
+}
+
+@Override
+public List<ApplicationResponse> getProjectsByStudent(String registerNo) {
+
+    List<ApplicationEntity> applications =
+            applicationRepository.findByStudent_RegisterNoAndStatus(
+                    registerNo,
                     ApplicationStatus.APPROVED
             );
 

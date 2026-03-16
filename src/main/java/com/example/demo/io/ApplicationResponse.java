@@ -1,6 +1,8 @@
 package com.example.demo.io;
 
 import com.example.demo.Enum.ApplicationStatus;
+import com.example.demo.Enum.ProjectStatus;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,9 +27,10 @@ public class ApplicationResponse {
     private String graduation;
     private String profileImageUrl;
     private String resumeURL;
-
+    private String projectImageUrl;
     private String centerName;    // 🔥 Needed for frontend
     private String projectName;   // 🔥 Needed for frontend
 
     private ApplicationStatus status; // 🔥 Needed
+    private ProjectStatus projectStatus;
 }

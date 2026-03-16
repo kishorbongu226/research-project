@@ -87,6 +87,7 @@ public List<ApplicationResponse> getStudentsByProject(
     return applicationService.getStudentsByProject(projectId);
 }
 
+
     @GetMapping("/projects")
 public List<ProjectResponse> getAllProjects() {
     return projectService.getAllProjects();
@@ -108,6 +109,14 @@ public void  changeProjectStatus(@PathVariable String projectId){
     project.setProjectStatus(ProjectStatus.COMPLETED);
     projectRepository.save(project);
     
+}
+
+@GetMapping("/student/{registerNo}/projects")
+public List<ApplicationResponse> getStudentProjects(
+        @PathVariable String registerNo) {
+
+            
+    return applicationService.getProjectsByStudent(registerNo);
 }
 
 }
