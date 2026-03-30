@@ -8,35 +8,35 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 
-import jakarta.servlet.http.HttpServletResponse;
-
 @Configuration
 public class SecurityConfig {
 
+    // Authentication Manager (kept for future login use)
     @Bean
     public AuthenticationManager authManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
 
+    // 🔥 MAIN SECURITY CONFIG
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                .csrf(csrf -> csrf.disable()) // disable CSRF for simplicity (for APIs)
-                .cors(cors -> {}) // enable CORS if needed (e.g., localhost:3000)
+                // Disable CSRF (important for APIs)
+                .csrf(csrf -> csrf.disable())
+
+                // Enable CORS (frontend can call backend)
+                .cors(cors -> {})
+
+                // 🔥 Allow ALL requests (for now)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login").permitAll()
-                        .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
-                        .anyRequest().authenticated()           // all other endpoints protected
+                        .anyRequest().permitAll()
                 )
-                .httpBasic(basic -> basic
-                        .authenticationEntryPoint((req, res, authEx) -> {
-                            // send 401 if not authenticated
-                            res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
-                        })
-                )
+
+                // Stateless (no sessions)
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Basic Auth: stateless
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
+
                 .build();
     }
 }
