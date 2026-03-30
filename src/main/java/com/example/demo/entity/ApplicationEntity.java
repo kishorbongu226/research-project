@@ -4,6 +4,7 @@ package com.example.demo.entity;
 
 
 import com.example.demo.Enum.ApplicationStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,13 +18,15 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "tbl_applications")
 @Builder
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 
@@ -40,6 +43,7 @@ public class ApplicationEntity {
     
     @ManyToOne
     @JoinColumn(name = "student_id")
+    @JsonIgnore
     private StudentEntity student;
    
     @Enumerated(EnumType.STRING)
@@ -48,6 +52,7 @@ public class ApplicationEntity {
     
     @ManyToOne
     @JoinColumn(name = "project_id")
+    @JsonIgnore
     private ProjectEntity project;
 
     

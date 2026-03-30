@@ -1,7 +1,7 @@
 package com.example.demo.entity;
 
 import com.example.demo.Enum.CenterStatus;
-import com.example.demo.Enum.ProjectStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,13 +14,15 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "tbl_centers")
 @Builder
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class CenterEntity {
@@ -37,6 +39,7 @@ public class CenterEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "professor_id", nullable = false)
+    @JsonIgnore
     private ProfessorEntity professor;
 
     

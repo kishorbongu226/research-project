@@ -1,13 +1,16 @@
 package com.example.demo.entity;
 
 import com.example.demo.Enum.ProjectStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
 @Table(name = "tbl_projects")
 @Builder
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProjectEntity {
@@ -37,14 +40,14 @@ public class ProjectEntity {
     @Column(columnDefinition = "TEXT")
     private String skillRequirements;
 
-    //  Many Projects → One Center
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "center_id", nullable = false)
+    @JsonIgnore
     private CenterEntity center;
 
-    //  Many Projects → One Professor (Creator)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by", nullable = false)
+    @JsonIgnore
     private ProfessorEntity director;
 
     
