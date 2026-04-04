@@ -40,6 +40,11 @@ public class ProfessorServiceImpl implements  ProfessorService {
                 .registerNo(request.getRegisterNo())
                 .name(request.getName())
                 .Occupation(request.getOccupation())
+                .designation(request.getDesignation())
+                .highestQualification(request.getHighestQualification())
+                .personalEmail(request.getPersonalEmail())
+                .officialEmail(request.getOfficialEmail())
+                .phoneNumber(request.getPhoneNumber())
                 .password(request.getPassword())
                 .role(Role.ADMIN)
                 .build();
@@ -60,6 +65,11 @@ public List<AdminProfileResponse> getAdminProfessors() {
                       .name(newProfessor.getName())
                       .Occupation(newProfessor.getOccupation())
                       .registerNo(newProfessor.getRegisterNo())
+                      .designation(newProfessor.getDesignation())
+                      .highestQualification(newProfessor.getHighestQualification())
+                      .personalEmail(newProfessor.getPersonalEmail())
+                      .officialEmail(newProfessor.getOfficialEmail())
+                      .phoneNumber(newProfessor.getPhoneNumber())
                       .build();
     }
 
@@ -69,6 +79,11 @@ public List<AdminProfileResponse> getAdminProfessors() {
                 .name(newProfessor.getName())
                 .Occupation(newProfessor.getOccupation())
                 .registerNo(newProfessor.getRegisterNo())
+                .designation(newProfessor.getDesignation())
+                .highestQualification(newProfessor.getHighestQualification())
+                .personalEmail(newProfessor.getPersonalEmail())
+                .officialEmail(newProfessor.getOfficialEmail())
+                .phoneNumber(newProfessor.getPhoneNumber())
                 .build();
     }
 }

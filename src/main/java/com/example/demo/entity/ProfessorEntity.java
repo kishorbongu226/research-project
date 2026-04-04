@@ -31,6 +31,12 @@ public class ProfessorEntity {
     private String registerNo;
     private String name;
     private String Occupation;
+    private String designation;
+    private String highestQualification;
+    private String personalEmail;
+    @Column(unique = true)
+    private String officialEmail;
+    private String phoneNumber;
     private String imageUrl;
     private String password;
 

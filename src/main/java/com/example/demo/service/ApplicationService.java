@@ -16,6 +16,8 @@ void declineApplication(String applicationId, Long professorId);
 List<ApplicationResponse> getPendingApplications(Long professorId);
 List<ApplicationResponse> getApprovedApplications(Long professorId);
 List<ApplicationResponse> getStudentsByProject(String projectId);
+List<ApplicationResponse> getApplicationsByStudent(String registerNo);
 List<ApplicationResponse> getProjectsByStudent(String registerNo);
+void removeStudentFromProject(String projectId, String applicationId, String professorRegisterNo);
 
 }

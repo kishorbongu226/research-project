@@ -21,11 +21,13 @@ import org.springframework.web.server.ResponseStatusException;
 import com.example.demo.entity.ProfessorEntity;
 import com.example.demo.io.AdminProfileResponse;
 import com.example.demo.io.ApplicationResponse;
+import com.example.demo.io.ProjectResponse;
 import com.example.demo.io.ProfessorRequest;
 import com.example.demo.io.ProfessorResponse;
 import com.example.demo.repository.ProfessorRepository;
 import com.example.demo.service.ApplicationService;
 import com.example.demo.service.ProfessorService;
+import com.example.demo.service.ProjectService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -38,6 +40,7 @@ public class ProfessorController {
 
     private final ProfessorService professorService;
     private final ApplicationService applicationService;
+    private final ProjectService projectService;
     private final ProfessorRepository professorRepository;
 
     @PostMapping("/professor/add")
@@ -61,8 +64,7 @@ public class ProfessorController {
     public String approveApplication(
             @PathVariable String applicationId,
             Principal principal) {
-        ProfessorEntity professor = professorRepository
-                .findByRegisterNo(principal.getName())
+        ProfessorEntity professor = findProfessorByIdentifier(principal.getName())
                 .orElseThrow(() -> new RuntimeException("Professor not found"));
 
         Long professorID = professor.getId();
@@ -74,8 +76,7 @@ public class ProfessorController {
     public String declineApplication(
             @PathVariable String applicationId,
             Principal principal) {
-        ProfessorEntity professor = professorRepository
-                .findByRegisterNo(principal.getName())
+        ProfessorEntity professor = findProfessorByIdentifier(principal.getName())
                 .orElseThrow(() -> new RuntimeException("Professor not found"));
 
         Long professorID = professor.getId();
@@ -86,8 +87,7 @@ public class ProfessorController {
     @GetMapping("/applications/pending/")
     public List<ApplicationResponse> getPendingApplications(
             Principal principal) {
-        ProfessorEntity professor = professorRepository
-                .findByRegisterNo(principal.getName())
+        ProfessorEntity professor = findProfessorByIdentifier(principal.getName())
                 .orElseThrow(() -> new RuntimeException("Professor not found"));
 
         Long professorID = professor.getId();
@@ -97,8 +97,7 @@ public class ProfessorController {
     @GetMapping("/applications/approved/")
     public List<ApplicationResponse> getApprovedApplications(
             Principal principal) {
-        ProfessorEntity professor = professorRepository
-                .findByRegisterNo(principal.getName())
+        ProfessorEntity professor = findProfessorByIdentifier(principal.getName())
                 .orElseThrow(() -> new RuntimeException("Professor not found"));
 
         Long professorID = professor.getId();
@@ -111,12 +110,17 @@ public class ProfessorController {
     }
     @GetMapping("/admins/{professorID}")
     public AdminProfileResponse getAdminProfessors(@PathVariable  String professorID) {
-        Optional<ProfessorEntity> optionalprofessorEntity = professorRepository.findByRegisterNo(professorID);
+        Optional<ProfessorEntity> optionalprofessorEntity = findProfessorByIdentifier(professorID);
         ProfessorEntity professor = null;
         if(optionalprofessorEntity.isPresent()){
             professor = optionalprofessorEntity.get();
         }
         return convertToProfileResponse(professor);
+    }
+
+    @GetMapping("/admins/{professorID}/projects")
+    public List<ProjectResponse> getProfessorProjects(@PathVariable String professorID) {
+        return projectService.getProjectsByProfessor(professorID);
     }
 
       private AdminProfileResponse convertToProfileResponse(ProfessorEntity newProfessor) {
@@ -125,7 +129,17 @@ public class ProfessorController {
                 .name(newProfessor.getName())
                 .Occupation(newProfessor.getOccupation())
                 .registerNo(newProfessor.getRegisterNo())
+                .designation(newProfessor.getDesignation())
+                .highestQualification(newProfessor.getHighestQualification())
+                .personalEmail(newProfessor.getPersonalEmail())
+                .officialEmail(newProfessor.getOfficialEmail())
+                .phoneNumber(newProfessor.getPhoneNumber())
                 .build();
+    }
+
+    private Optional<ProfessorEntity> findProfessorByIdentifier(String identifier) {
+        return professorRepository.findByOfficialEmail(identifier)
+                .or(() -> professorRepository.findByRegisterNo(identifier));
     }
 
 

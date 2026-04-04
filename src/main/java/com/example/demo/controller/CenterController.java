@@ -106,9 +106,7 @@ public CenterResponse editCenter(
         CenterEntity center = centerRepository.findByCenterId(centerId)
         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Center not found"));
         
-        ProfessorEntity professor = professorRepository
-        .findByRegisterNo(center.getProfessor().getRegisterNo())
-        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Professor not found"));
+        ProfessorEntity professor = center.getProfessor();
         
         return centerService.getCenterDetails(center, professor);
     }

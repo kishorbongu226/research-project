@@ -20,5 +20,8 @@ public class CenterResponse {
     private String imgUrl;
     private String description;
     private CenterStatus projectStatus;
+    private String professorName;
+    private String professorOccupation;
+    private String professorImageUrl;
     
 }

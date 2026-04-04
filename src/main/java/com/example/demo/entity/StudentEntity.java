@@ -47,6 +47,10 @@ public class StudentEntity {
     private String phoneNumber;
 
     private String profileImageUrl;
+    @Column(length = 4000)
+    private String profileDescription;
+    @Column(length = 4000)
+    private String achievements;
 
     private String password;
 

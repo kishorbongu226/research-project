@@ -11,8 +11,14 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import org.springframework.web.bind.annotation.PutMapping;
+
+
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -96,9 +102,19 @@ public List<ProjectResponse> getAllProjects() {
 }
 
 
-    @GetMapping("/project/{projectId}")
+@GetMapping("/project/{projectId}")
 public ProjectResponse getProjectById(@PathVariable String projectId) {
     return projectService.getProjectByProjectId(projectId);
+}
+
+@PutMapping("/project/{projectId}")
+@PreAuthorize("hasRole('ADMIN')")
+public ProjectResponse updateProject(
+        @PathVariable String projectId,
+        @RequestBody ProjectRequest request,
+        Principal principal) {
+
+    return projectService.updateProject(projectId, request, principal.getName());
 }
 
 @PostMapping("/project/completed/{projectId}")
@@ -119,6 +135,16 @@ public List<ApplicationResponse> getStudentProjects(
 
             
     return applicationService.getProjectsByStudent(registerNo);
+}
+
+@DeleteMapping("/project/{projectId}/students/{applicationId}")
+@PreAuthorize("hasRole('ADMIN')")
+public void removeStudentFromProject(
+        @PathVariable String projectId,
+        @PathVariable String applicationId,
+        Principal principal) {
+
+    applicationService.removeStudentFromProject(projectId, applicationId, principal.getName());
 }
 
 }

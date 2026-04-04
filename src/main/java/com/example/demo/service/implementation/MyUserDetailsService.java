@@ -47,13 +47,16 @@ public class MyUserDetailsService implements UserDetailsService {
     }
 
     // 2️⃣ Try to find professor
-    Optional<ProfessorEntity> optionalProfessor = professorRepository.findByRegisterNo(username);
+    Optional<ProfessorEntity> optionalProfessor = professorRepository.findByOfficialEmail(username);
+    if (optionalProfessor.isEmpty()) {
+        optionalProfessor = professorRepository.findByRegisterNo(username);
+    }
     if (optionalProfessor.isPresent()) {
         ProfessorEntity professor = optionalProfessor.get();
-        logger.info("Professor found: {} with role {}", professor.getRegisterNo(), professor.getRole());
+        logger.info("Professor found: {} with role {}", professor.getOfficialEmail(), professor.getRole());
 
         return User.builder()
-                .username(professor.getRegisterNo())
+                .username(professor.getOfficialEmail())
                 .password("{noop}" + professor.getPassword())
                 .roles(professor.getRole().toString())
                 .build();

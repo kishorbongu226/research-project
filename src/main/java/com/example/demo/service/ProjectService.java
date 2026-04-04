@@ -13,6 +13,8 @@ public interface ProjectService {
     ProjectResponse createProject(ProjectRequest request,MultipartFile file,Principal principal);
     void deleteProject(Long projectId, Long professorId);
     List<ProjectResponse> getProjectsByCenter(String centerId);
+    List<ProjectResponse> getProjectsByProfessor(String registerNo);
     ProjectResponse getProjectByProjectId(String projectId);
     List<ProjectResponse> getAllProjects();
+    ProjectResponse updateProject(String projectId, ProjectRequest request, String professorRegisterNo);
 }

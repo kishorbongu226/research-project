@@ -11,5 +11,7 @@ public interface ProjectRepository extends JpaRepository<ProjectEntity, Long> {
 
     Optional<ProjectEntity> findByProjectId(String projectId);
     List<ProjectEntity> findByCenter_CenterId(String centerId);
+    List<ProjectEntity> findByDirector_RegisterNo(String registerNo);
+    List<ProjectEntity> findByDirector_Id(Long directorId);
     
 }

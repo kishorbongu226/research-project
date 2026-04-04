@@ -3,6 +3,8 @@ package com.example.demo.entity;
 
 
 
+import java.time.LocalDate;
+
 import com.example.demo.Enum.ApplicationStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -40,6 +42,10 @@ public class ApplicationEntity {
    
     private String graduation;
     private String resumeURL;
+    private LocalDate decisionDate;
+    private LocalDate slotDate;
+    private String morningSlot;
+    private String afternoonSlot;
     
     @ManyToOne
     @JoinColumn(name = "student_id")

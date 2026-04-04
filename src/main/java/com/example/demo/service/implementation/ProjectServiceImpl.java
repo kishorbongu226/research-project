@@ -37,7 +37,7 @@ public class ProjectServiceImpl implements ProjectService {
         CenterEntity center = centerRepository.findByCenterId(request.getCenterId())
                 .orElseThrow(() -> new RuntimeException("Center not found"));
 
-        ProfessorEntity professor = professorRepository.findByRegisterNo(principal.getName())
+        ProfessorEntity professor = findProfessorByIdentifier(principal.getName())
                 .orElseThrow(() -> new RuntimeException("Professor not found"));
                 
 
@@ -75,12 +75,28 @@ public class ProjectServiceImpl implements ProjectService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<ProjectResponse> getProjectsByProfessor(String registerNo) {
+
+        ProfessorEntity professor = findProfessorByIdentifier(registerNo)
+                .orElseThrow(() -> new RuntimeException("Professor not found"));
+
+        List<ProjectEntity> projects =
+                projectRepository.findByDirector_Id(professor.getId());
+
+        return projects.stream()
+                .map(this::convertToResponse)
+                .collect(Collectors.toList());
+    }
+
     // 🔹 Convert Request → Entity
     private ProjectEntity convertToEntity(ProjectRequest request) {
         return ProjectEntity.builder()
                 .projectId(request.getProjectId())
                 .title(request.getTitle())
                 .description(request.getDescription())
+                .teamSize(request.getTeamSize() != null ? request.getTeamSize() : 6)
+                .leadershipMembers(request.getLeadershipMembers())
                 .projectStatus(ProjectStatus.ONGOING)
                 .responsibilities(request.getResponsibilities())
                 .skillRequirements(request.getSkillRequirements())
@@ -94,6 +110,8 @@ public class ProjectServiceImpl implements ProjectService {
                 .title(project.getTitle())
                 .description(project.getDescription())
                 .imageUrl(project.getImageUrl())
+                .teamSize(project.getTeamSize() != null ? project.getTeamSize() : 6)
+                .leadershipMembers(project.getLeadershipMembers())
                 .projectStatus(project.getProjectStatus())
                 .responsibilities(project.getResponsibilities())
                 .skillRequirements(project.getSkillRequirements())
@@ -119,4 +137,34 @@ public List<ProjectResponse> getAllProjects() {
             .map(this::convertToResponse)
             .toList();
 }
+
+    @Override
+    public ProjectResponse updateProject(String projectId, ProjectRequest request, String professorRegisterNo) {
+
+        ProjectEntity project = projectRepository.findByProjectId(projectId)
+                .orElseThrow(() -> new RuntimeException("Project not found"));
+
+        ProfessorEntity professor = findProfessorByIdentifier(professorRegisterNo)
+                .orElseThrow(() -> new RuntimeException("Professor not found"));
+
+        if (!project.getDirector().getId().equals(professor.getId())) {
+            throw new RuntimeException("Only the project owner can update this project");
+        }
+
+        project.setTitle(request.getTitle());
+        project.setDescription(request.getDescription());
+        project.setResponsibilities(request.getResponsibilities());
+        project.setSkillRequirements(request.getSkillRequirements());
+        project.setLeadershipMembers(request.getLeadershipMembers());
+        project.setTeamSize(request.getTeamSize() != null ? request.getTeamSize() : 6);
+
+        project = projectRepository.save(project);
+
+        return convertToResponse(project);
+    }
+
+    private java.util.Optional<ProfessorEntity> findProfessorByIdentifier(String identifier) {
+        return professorRepository.findByOfficialEmail(identifier)
+                .or(() -> professorRepository.findByRegisterNo(identifier));
+    }
 }

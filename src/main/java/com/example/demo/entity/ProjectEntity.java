@@ -29,6 +29,10 @@ public class ProjectEntity {
     private String description;
 
     private String imageUrl;
+    private Integer teamSize;
+
+    @Column(columnDefinition = "TEXT")
+    private String leadershipMembers;
 
     @Enumerated(EnumType.STRING)
     private ProjectStatus projectStatus;

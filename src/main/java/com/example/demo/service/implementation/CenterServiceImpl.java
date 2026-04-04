@@ -123,6 +123,15 @@ public CenterResponse updateCenter(String centerID, CenterRequest request, Multi
                         .imgUrl(newUser.getImgUrl())
                         .description(newUser.getDescription())
                         .projectStatus(newUser.getProjectStatus())
+                        .professorName(
+                                newUser.getProfessor() != null ? newUser.getProfessor().getName() : null
+                        )
+                        .professorOccupation(
+                                newUser.getProfessor() != null ? newUser.getProfessor().getDesignation() : null
+                        )
+                        .professorImageUrl(
+                                newUser.getProfessor() != null ? newUser.getProfessor().getImageUrl() : null
+                        )
                         .build();
     }
 

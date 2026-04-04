@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -17,6 +19,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.example.demo.io.ApplicationRequest;
 import com.example.demo.io.ApplicationResponse;
 import com.example.demo.io.StudentProfileResponse;
+import com.example.demo.io.StudentProfileUpdateRequest;
 import com.example.demo.service.ApplicationService;
 import com.example.demo.service.StudentService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -60,10 +63,25 @@ public ApplicationResponse apply(
 
 private final StudentService studentService;
 
-    @GetMapping("/student/profile/{registerNo}")
+@GetMapping("/student/profile/{registerNo}")
     public StudentProfileResponse getStudentProfile(
             @PathVariable String registerNo) {
 
         return studentService.getStudentProfile(registerNo);
+    }
+
+    @PutMapping("/student/profile/{registerNo}")
+    public StudentProfileResponse updateStudentProfile(
+            @PathVariable String registerNo,
+            @RequestBody StudentProfileUpdateRequest request) {
+
+        return studentService.updateStudentProfile(registerNo, request);
+    }
+
+    @GetMapping("/student/{registerNo}/applications")
+    public java.util.List<ApplicationResponse> getStudentApplications(
+            @PathVariable String registerNo) {
+
+        return applicationService.getApplicationsByStudent(registerNo);
     }
 }

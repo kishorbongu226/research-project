@@ -15,5 +15,7 @@ public class StudentProfileResponse {
     private String email;
     private String phoneNumber;
     private String profileImageUrl;
+    private String profileDescription;
+    private String achievements;
     private int applicationCount;
 }

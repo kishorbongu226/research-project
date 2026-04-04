@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.entity.StudentEntity;
 import com.example.demo.io.StudentProfileResponse;
+import com.example.demo.io.StudentProfileUpdateRequest;
 import com.example.demo.repository.StudentRepository;
 import com.example.demo.service.StudentService;
 
@@ -30,6 +31,38 @@ public class StudentServiceImpl implements StudentService {
                 .email(student.getEmail())
                 .phoneNumber(student.getPhoneNumber())
                 .profileImageUrl(student.getProfileImageUrl())
+                .profileDescription(student.getProfileDescription())
+                .achievements(student.getAchievements())
+                .applicationCount(
+                        student.getApplications() != null
+                                ? student.getApplications().size()
+                                : 0
+                )
+                .build();
+    }
+
+    @Override
+    public StudentProfileResponse updateStudentProfile(String registerNo, StudentProfileUpdateRequest request) {
+
+        StudentEntity student = studentRepository.findByRegisterNo(registerNo)
+                .orElseThrow(() -> new RuntimeException("Student not found"));
+
+        student.setProfileDescription(request.getProfileDescription());
+        student.setAchievements(request.getAchievements());
+
+        student = studentRepository.save(student);
+
+        return StudentProfileResponse.builder()
+                .registerNo(student.getRegisterNo())
+                .name(student.getName())
+                .branch(student.getBranch())
+                .year(student.getYear())
+                .course(student.getCourse())
+                .email(student.getEmail())
+                .phoneNumber(student.getPhoneNumber())
+                .profileImageUrl(student.getProfileImageUrl())
+                .profileDescription(student.getProfileDescription())
+                .achievements(student.getAchievements())
                 .applicationCount(
                         student.getApplications() != null
                                 ? student.getApplications().size()

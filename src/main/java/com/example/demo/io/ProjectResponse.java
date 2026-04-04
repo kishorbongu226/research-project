@@ -17,6 +17,8 @@ public class ProjectResponse {
     private String title;
     private String description;
     private String imageUrl;
+    private Integer teamSize;
+    private String leadershipMembers;
     private ProjectStatus projectStatus;
 
     private String responsibilities;

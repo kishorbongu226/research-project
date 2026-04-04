@@ -15,4 +15,9 @@ public class ProfessorResponse {
     private String name;
     private String registerNo;
     private String Occupation;
+    private String designation;
+    private String highestQualification;
+    private String personalEmail;
+    private String officialEmail;
+    private String phoneNumber;
 }

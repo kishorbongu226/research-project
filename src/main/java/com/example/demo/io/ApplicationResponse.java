@@ -1,5 +1,7 @@
 package com.example.demo.io;
 
+import java.time.LocalDate;
+
 import com.example.demo.Enum.ApplicationStatus;
 import com.example.demo.Enum.ProjectStatus;
 
@@ -14,8 +16,8 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ApplicationResponse {
 
-    private Long id;              // 🔥 DB id (VERY IMPORTANT)
-    private String applicationId; // UUID if you want
+    private Long id;
+    private String applicationId;
 
     private String name;
     private String registerNo;
@@ -28,9 +30,14 @@ public class ApplicationResponse {
     private String profileImageUrl;
     private String resumeURL;
     private String projectImageUrl;
-    private String centerName;    // 🔥 Needed for frontend
-    private String projectName;   // 🔥 Needed for frontend
+    private String projectId;
+    private String centerName;
+    private String projectName;
+    private LocalDate decisionDate;
+    private LocalDate slotDate;
+    private String morningSlot;
+    private String afternoonSlot;
 
-    private ApplicationStatus status; // 🔥 Needed
+    private ApplicationStatus status;
     private ProjectStatus projectStatus;
 }

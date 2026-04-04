@@ -10,5 +10,10 @@ public class AdminProfileResponse {
     private String registerNo;
     private String name;
     private String Occupation;
-  private String imageURL;
+    private String designation;
+    private String highestQualification;
+    private String personalEmail;
+    private String officialEmail;
+    private String phoneNumber;
+    private String imageURL;
 }
