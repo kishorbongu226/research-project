@@ -19,5 +19,11 @@ public interface ApplicationRepository extends JpaRepository<ApplicationEntity, 
     List<ApplicationEntity> findByStudent_RegisterNo(String registerNo);
     List<ApplicationEntity> findByStudent_RegisterNoAndStatus(String registerNo, ApplicationStatus status);
     long countByProject_ProjectIdAndStatus(String projectId, ApplicationStatus status);
+    boolean existsByStudent_RegisterNoAndProject_ProjectId(String registerNo, String projectId);
+    List<ApplicationEntity> findByStudent_RegisterNoAndProject_ProjectIdAndStatus(
+            String registerNo,
+            String projectId,
+            ApplicationStatus status
+    );
     
 }

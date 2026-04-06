@@ -61,6 +61,13 @@ public class ApplicationsServiceImpl implements ApplicationService {
                     return new RuntimeException("Project not found");
                 });
 
+        if (applicationRepository.existsByStudent_RegisterNoAndProject_ProjectId(
+                request.getRegisterNo(),
+                request.getProjectId()
+        )) {
+            throw new RuntimeException("You have already applied for this project");
+        }
+
         validateProjectCanAcceptApplications(project);
 
         StudentEntity student = studentRepository
@@ -132,6 +139,23 @@ public class ApplicationsServiceImpl implements ApplicationService {
 
         if (!application.getProject().getDirector().getId().equals(professorID)) {
             throw new RuntimeException("Only project creator can approve this application");
+        }
+
+        if (application.getStatus() == ApplicationStatus.APPROVED) {
+            return;
+        }
+
+        List<ApplicationEntity> existingApprovedEntries =
+                applicationRepository.findByStudent_RegisterNoAndProject_ProjectIdAndStatus(
+                        application.getStudent().getRegisterNo(),
+                        application.getProject().getProjectId(),
+                        ApplicationStatus.APPROVED
+                );
+        boolean studentAlreadyInProject = existingApprovedEntries.stream()
+                .anyMatch(existing -> !existing.getId().equals(application.getId()));
+
+        if (studentAlreadyInProject) {
+            throw new RuntimeException("Student is already added to this project");
         }
 
         ensureTeamCapacity(application.getProject());
