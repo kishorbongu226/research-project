@@ -3,6 +3,7 @@ package com.example.demo.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -17,26 +18,19 @@ public class SecurityConfig {
         return authConfig.getAuthenticationManager();
     }
 
-    // 🔥 MAIN SECURITY CONFIG
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                // Disable CSRF (important for APIs)
                 .csrf(csrf -> csrf.disable())
-
-                // Enable CORS (frontend can call backend)
                 .cors(cors -> {})
-
-                // 🔥 Allow ALL requests (for now)
+                // Authenticate Basic Auth headers so controller Principal is available.
+                .httpBasic(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
                         .anyRequest().permitAll()
                 )
-
-                // Stateless (no sessions)
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-
                 .build();
     }
 }

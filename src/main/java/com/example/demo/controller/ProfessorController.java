@@ -64,8 +64,7 @@ public class ProfessorController {
     public String approveApplication(
             @PathVariable String applicationId,
             Principal principal) {
-        ProfessorEntity professor = findProfessorByIdentifier(principal.getName())
-                .orElseThrow(() -> new RuntimeException("Professor not found"));
+        ProfessorEntity professor = getAuthenticatedProfessor(principal);
 
         Long professorID = professor.getId();
         applicationService.approveApplication(applicationId, professorID);
@@ -76,8 +75,7 @@ public class ProfessorController {
     public String declineApplication(
             @PathVariable String applicationId,
             Principal principal) {
-        ProfessorEntity professor = findProfessorByIdentifier(principal.getName())
-                .orElseThrow(() -> new RuntimeException("Professor not found"));
+        ProfessorEntity professor = getAuthenticatedProfessor(principal);
 
         Long professorID = professor.getId();
         applicationService.declineApplication(applicationId, professorID);
@@ -87,8 +85,7 @@ public class ProfessorController {
     @GetMapping("/applications/pending/")
     public List<ApplicationResponse> getPendingApplications(
             Principal principal) {
-        ProfessorEntity professor = findProfessorByIdentifier(principal.getName())
-                .orElseThrow(() -> new RuntimeException("Professor not found"));
+        ProfessorEntity professor = getAuthenticatedProfessor(principal);
 
         Long professorID = professor.getId();
         return applicationService.getPendingApplications(professorID);
@@ -97,8 +94,7 @@ public class ProfessorController {
     @GetMapping("/applications/approved/")
     public List<ApplicationResponse> getApprovedApplications(
             Principal principal) {
-        ProfessorEntity professor = findProfessorByIdentifier(principal.getName())
-                .orElseThrow(() -> new RuntimeException("Professor not found"));
+        ProfessorEntity professor = getAuthenticatedProfessor(principal);
 
         Long professorID = professor.getId();
         return applicationService.getApprovedApplications(professorID);
@@ -140,6 +136,15 @@ public class ProfessorController {
     private Optional<ProfessorEntity> findProfessorByIdentifier(String identifier) {
         return professorRepository.findByOfficialEmail(identifier)
                 .or(() -> professorRepository.findByRegisterNo(identifier));
+    }
+
+    private ProfessorEntity getAuthenticatedProfessor(Principal principal) {
+        if (principal == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Authentication required");
+        }
+
+        return findProfessorByIdentifier(principal.getName())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, "Professor not found"));
     }
 
 
